@@ -4,7 +4,6 @@ from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS
 import os
 
-#用flask实现一个简单的web服务
 app = Flask(__name__)
 CORS(app)
 @app.route('/root_controls', methods=['POST',"GET"])
@@ -112,7 +111,7 @@ def root_controls():
 def controls():
     user_input = request.form.get('user_input')
 
-    password = '@$&*ling060318'
+    password = '' #写你的root密码
 
     # 创建临时Expect脚本文件
     current_dir = os.getcwd()
@@ -127,14 +126,11 @@ def controls():
     """.format(user_input=user_input, password=password)
         f.write(script_content)
     subprocess.run(['chmod', '+x', temp_script])
-    # 使用expect脚本执行命令并实时打印输出
     p = subprocess.Popen(['/usr/bin/expect', temp_script], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
-    while p.poll() is None:  # 当子进程还在运行时
+    while p.poll() is None: 
         line = p.stdout.readline().decode('utf-8').rstrip('\n')
-        print(line)  # 实时打印每一行输出
-    # 确保等待子进程结束
+        print(line) 
     p.wait()
-    # 删除临时脚本
     os.remove(temp_script)
 
     return jsonify({'output': "执行成功!!!"})
